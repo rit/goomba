@@ -8,7 +8,18 @@ describe("summation", function()
   end)
 
   it("can add with extra spaces", function()
-    local actual = calc("1 +  2 + 4   ")
-    assert.are.equal(actual, 7)
+    local actual = calc("1 +  2 + 4  + 2")
+    assert.are.equal(actual, 9)
   end)
+
+  it("can substrac", function()
+    local actual = calc(" 3   - 2 ")
+    assert.are.equal(actual, 1)
+  end)
+
+
+  -- it("can multiply", function()
+  --   local actual = calc("2 * 2")
+  --   assert.are.equal(actual, 4)
+  -- end)
 end)
