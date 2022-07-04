@@ -1,15 +1,25 @@
 local lpeg = require "lpeg"
+local pt = require "pt"
 
-local nbr = lpeg.R("09")
-local space = lpeg.P(" ")
-local plus = lpeg.P("+")
-local sum = nbr * (space^0 * plus * space^0 * nbr)^0
 
-local matched = sum:match("1 + 2 + 3")
-print(matched)
+local M = {}
 
-local matched = sum:match("1 + 2 + 3 + 4")
-print(matched)
+function fold(rows)
+  local acc = rows[1]
+  for i=2, #rows do
+    acc = acc + rows[i]
+  end
+  return acc
+end
 
-local matched = sum:match("1")
-print(matched)
+local space = lpeg.S(" \n\t")^0
+local nbr = lpeg.R("09")^1 / tonumber * space
+local plus = lpeg.P("+") * space
+local parser = space * lpeg.Ct(nbr * (plus * nbr)^0) / fold * -1
+
+
+function M.calc(input)
+  return parser:match(input)
+end
+
+return M
