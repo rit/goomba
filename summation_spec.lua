@@ -35,4 +35,13 @@ describe("summation", function()
     local actual = calc("4 / 2")
     assert.are.equal(actual, 2)
   end)
+
+  it("understands parenthesis", function()
+    local actual = calc("    4 * (2 + 1)")
+    assert.are.equal(actual, 12)
+
+    local actual = calc("    4 * ( 2 + 1)")
+    assert.are.equal(actual, 12)
+  end)
+
 end)
