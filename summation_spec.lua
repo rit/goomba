@@ -22,4 +22,17 @@ describe("summation", function()
     local actual = calc("2 * 2")
     assert.are.equal(actual, 4)
   end)
+
+  it("can multiplication with addition", function()
+    local actual = calc("2 * 2 + 1")
+    assert.are.equal(actual, 5)
+
+    local actual = calc("1 + 2 * 2 + 1")
+    assert.are.equal(actual, 6)
+  end)
+
+  it("can do division", function()
+    local actual = calc("4 / 2")
+    assert.are.equal(actual, 2)
+  end)
 end)

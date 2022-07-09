@@ -13,6 +13,10 @@ function fold(rows)
       acc = acc - right
     elseif op == "+" then
       acc = acc + right
+    elseif op == "*" then
+      acc = acc * right
+    elseif op == "/" then
+      acc = acc / right
     end
   end
   return acc
@@ -21,7 +25,10 @@ end
 local space = lpeg.S(" \n\t")^0
 local nbr = lpeg.P("-")^-1 * lpeg.R("09")^1 / tonumber * space
 local opA = lpeg.C(lpeg.S("+-")) * space
-local parser = space *lpeg.Ct(nbr * (opA * nbr)^0) / fold * -1
+local opM = lpeg.C(lpeg.S("*/")) * space
+
+local term = space * lpeg.Ct(nbr * (opM * nbr)^0) / fold
+local parser = space *lpeg.Ct(term * (opA * term)^0) / fold * -1
 
 
 function M.calc(input)
