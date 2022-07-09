@@ -19,7 +19,7 @@ function fold(rows)
 end
 
 local space = lpeg.S(" \n\t")^0
-local nbr = lpeg.R("09")^1 / tonumber * space
+local nbr = lpeg.P("-")^-1 * lpeg.R("09")^1 / tonumber * space
 local opA = lpeg.C(lpeg.S("+-")) * space
 local parser = space *lpeg.Ct(nbr * (opA * nbr)^0) / fold * -1
 
