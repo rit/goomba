@@ -21,11 +21,15 @@ end
 -- Generate the opcodes (instruction sets)
 -- Return a list i.e., { "push", 34 }
 local function compile(ast)
+  if ast.tag == "numeral" then
+    return { "push", ast.val }
+  end
 end
 
 local function run()
 end
 
 return {
-  parse = parse
+  parse = parse,
+  compile = compile,
 }
