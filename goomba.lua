@@ -3,11 +3,13 @@ local lpeg = require "lpeg"
 local space = lpeg.S(" \n\t")^0
 local numeral = lpeg.R("09")^1
 
-local g = space * numeral / tonumber * space
 
 local function node(nbr)
-  return { tag = "numeral", val = nbr }
+  return { tag = "numeral", val = tonumber(nbr) }
 end
+
+
+local g = space * numeral / node * space
 
 
 -- Generate the AST
