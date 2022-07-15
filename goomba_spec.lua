@@ -8,6 +8,14 @@ describe("generating AST", function()
     local actual = goomba.parse("  28 ")
     assert.are.same(actual, { tag = "numeral", val = 28 })
   end)
+
+  it("can parse a hex number", function()
+    local actual = goomba.parse("0xFF")
+    assert.are.same(actual, { tag = "numeral", val = 255 })
+
+    local actual = goomba.parse("0x10")
+    assert.are.same(actual, { tag = "numeral", val = 16 })
+  end)
 end)
 
 
