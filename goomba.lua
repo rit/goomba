@@ -26,10 +26,24 @@ local function compile(ast)
   end
 end
 
-local function run()
+local function run(code, stack)
+  local pc = 1
+  while pc <= #code do
+    local op = code[pc]
+    if op == "push" then
+      pc = pc + 1
+      table.insert(stack, code[pc])
+    else
+      error("Opcode not supported")
+    end
+    pc = pc + 1
+  end
+
+  return stack
 end
 
 return {
   parse = parse,
   compile = compile,
+  run = run
 }

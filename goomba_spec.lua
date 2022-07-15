@@ -13,8 +13,17 @@ end)
 
 describe("generating code", function()
   it("generates push instruction for numeral", function()
-    ast = { tag = "numeral", val = 8 }
+    local ast = { tag = "numeral", val = 8 }
     local actual = goomba.compile(ast)
     assert.are.same({"push", 8}, actual)
+  end)
+end)
+
+
+describe("run", function()
+  it("evalulate the stack", function()
+    local code = {"push", 8}
+    local stack = goomba.run(code, {})
+    assert.are.same({8}, stack)
   end)
 end)
