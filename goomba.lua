@@ -88,20 +88,20 @@ local function run(code, stack)
       pc = pc + 1
       push(stack, code[pc])
     elseif op == "add" then
-      local left = pop(stack)
       local right = pop(stack)
+      local left = pop(stack)
       push(stack, left + right)
     elseif op == "sub" then
-      local left = pop(stack)
       local right = pop(stack)
+      local left = pop(stack)
       push(stack, left - right)
     elseif op == "mul" then
-      local left = pop(stack)
       local right = pop(stack)
+      local left = pop(stack)
       push(stack, left * right)
     elseif op == "div" then
-      local left = pop(stack)
       local right = pop(stack)
+      local left = pop(stack)
       push(stack, left / right)
     else
       error(string.format("Opcode `%s` not supported", op))
