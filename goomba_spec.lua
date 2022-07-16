@@ -1,6 +1,19 @@
 local goomba = require "goomba"
 
 describe("generating AST", function()
+  local node_1 = {
+        tag = "numeral",
+        val = 1,
+  }
+  local node_2 = {
+        tag = "numeral",
+        val = 2,
+  }
+  local node_4 = {
+        tag = "numeral",
+        val = 4,
+  }
+
   it("can parse a number", function()
     local actual = goomba.parse("8")
     assert.are.same(actual, { tag = "numeral", val = 8 })
@@ -44,6 +57,30 @@ describe("generating AST", function()
     }
     assert.are.same(expected, actual)
   end)
+
+  it("can parse multiplication #focus", function()
+    local ast = goomba.parse("1 * 2")
+    local expected = {
+      tag = "binop",
+      val = "mul",
+      left = node_1,
+      right = node_2
+
+    }
+    assert.are.same(expected, ast)
+  end)
+
+  it("can parse multiplication #focus", function()
+    local ast = goomba.parse("4 / 2")
+    local expected = {
+      tag = "binop",
+      val = "div",
+      left = node_4,
+      right = node_2
+
+    }
+    assert.are.same(expected, ast)
+  end)
 end)
 
 
@@ -64,7 +101,7 @@ describe("generating code", function()
 end)
 
 
-describe("run #focus", function()
+describe("run", function()
   it("evalulate the stack", function()
     local code = {"push", 8}
     local stack = goomba.run(code, {})
