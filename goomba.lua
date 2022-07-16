@@ -45,7 +45,7 @@ local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2d
 local numeral = (hexnum + decimal) / node
 local opA = lpeg.C(lpeg.S("+-")) * space
 local opM = lpeg.C(lpeg.S("*/")) * space
-local term = numeral * ((opM / nodeBinop) * numeral)^0
+local term = lpeg.Ct(numeral * ((opM / nodeBinop) * numeral)^0) / foldBin
 local g = space * lpeg.Ct(term * ((opA / nodeBinop) * term)^0) / foldBin
 
 
