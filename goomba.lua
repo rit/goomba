@@ -1,4 +1,7 @@
 local lpeg = require "lpeg"
+local push = table.insert
+local pop = table.remove
+
 
 local function hex(nbr)
   return tonumber(nbr, 16)
@@ -38,7 +41,7 @@ local function run(code, stack)
     local op = code[pc]
     if op == "push" then
       pc = pc + 1
-      table.insert(stack, code[pc])
+      push(stack, code[pc])
     else
       error("Opcode not supported")
     end
