@@ -30,10 +30,8 @@ local function nodeBinop(op)
   }
 end
 
-local function parse_nodes(nodes)
-  idx = 1
-  local node = nodes[idx]
-  local tree = node
+local function foldBin(nodes)
+  local tree = nodes[1]
   for i=2, #nodes, 2 do
     newtree = nodes[i]
     left = tree
@@ -48,7 +46,7 @@ end
 
 local opA = lpeg.C(lpeg.S("+-")) * space
 local n = numeral / node 
-local g = space * lpeg.Ct(n * ((opA / nodeBinop) * n)^0) / parse_nodes
+local g = space * lpeg.Ct(n * ((opA / nodeBinop) * n)^0) / foldBin
 
 
 -- Generate the AST
