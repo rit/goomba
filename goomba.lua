@@ -9,12 +9,6 @@ local function hex(nbr)
 end
  
 
-local space = lpeg.S(" \n\t")^0
-local decimal = lpeg.R("09")^1 * space
-local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex
-local numeral = hexnum + decimal
-
-
 local function node(nbr)
   return { tag = "numeral", val = tonumber(nbr) }
 end
@@ -43,7 +37,10 @@ local function foldBin(nodes)
   return tree
 end
 
-
+local space = lpeg.S(" \n\t")^0
+local decimal = lpeg.R("09")^1 * space
+local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex
+local numeral = hexnum + decimal
 local opA = lpeg.C(lpeg.S("+-")) * space
 local n = numeral / node 
 local g = space * lpeg.Ct(n * ((opA / nodeBinop) * n)^0) / foldBin
@@ -57,10 +54,25 @@ end
 
 -- Generate the opcodes (instruction sets)
 -- Return a list i.e., { "push", 34 }
-local function compile(ast)
-  if ast.tag == "numeral" then
-    return { "push", ast.val }
+local function code_expr(state, node)
+  local code = state.code
+  if node.tag == "numeral" then
+    push(code, "push")
+    push(code, node.val)
+  elseif node.tag == "binop" then
+    code_expr(state, node.left)
+    code_expr(state, node.right)
+    push(code, node.val) -- should this be pushed first?
   end
+end
+
+
+local function compile(ast)
+  local state = {
+    code = {}
+  }
+  code_expr(state, ast)
+  return state.code
 end
 
 local function run(code, stack)

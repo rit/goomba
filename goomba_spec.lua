@@ -17,7 +17,7 @@ describe("generating AST", function()
     assert.are.same(actual, { tag = "numeral", val = 16 })
   end)
 
-  it("parse operator #focus", function()
+  it("parse operator", function()
     local actual = goomba.parse("20 + 30")
     assert.are.same(
       { tag = "binop", val = "add",
@@ -47,11 +47,15 @@ describe("generating AST", function()
 end)
 
 
-describe("generating code", function()
+describe("generating code #focus", function()
   it("generates push instruction for numeral", function()
     local ast = { tag = "numeral", val = 8 }
     local actual = goomba.compile(ast)
     assert.are.same({"push", 8}, actual)
+
+    local ast = goomba.parse("1+2")
+    local actual = goomba.compile(ast)
+    assert.are.same({"push", 1, "push", 2, "add"}, actual)
   end)
 end)
 
