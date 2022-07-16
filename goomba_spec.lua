@@ -16,6 +16,16 @@ describe("generating AST", function()
     local actual = goomba.parse("0x10")
     assert.are.same(actual, { tag = "numeral", val = 16 })
   end)
+
+  it("parse operator #focus", function()
+    local actual = goomba.parse("20 + 30")
+    assert.are.same(actual,
+      { tag = "binop", val = "add",
+        left = { tag = "numeral", val = 20 },
+        right = { tag = "numeral", val = 30 },
+      }
+    )
+  end)
 end)
 
 
