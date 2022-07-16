@@ -56,6 +56,10 @@ describe("generating code #focus", function()
     local ast = goomba.parse("1+2")
     local actual = goomba.compile(ast)
     assert.are.same({"push", 1, "push", 2, "add"}, actual)
+
+    local ast = goomba.parse("1-2")
+    local actual = goomba.compile(ast)
+    assert.are.same({"push", 1, "push", 2, "sub"}, actual)
   end)
 end)
 
