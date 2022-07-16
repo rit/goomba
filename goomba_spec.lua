@@ -19,12 +19,30 @@ describe("generating AST", function()
 
   it("parse operator #focus", function()
     local actual = goomba.parse("20 + 30")
-    assert.are.same(actual,
+    assert.are.same(
       { tag = "binop", val = "add",
         left = { tag = "numeral", val = 20 },
         right = { tag = "numeral", val = 30 },
-      }
+      },
+      actual
     )
+
+    local actual = goomba.parse("20 + 30 - 4")
+
+    local left = { tag = "binop", val = "add",
+      left = { tag = "numeral", val = 20 },
+      right = { tag = "numeral", val = 30 },
+    }
+    local expected = {
+      tag = "binop",
+      val = "sub",
+      left = left,
+      right = {
+        tag = "numeral",
+        val = 4,
+      },
+    }
+    assert.are.same(expected, actual)
   end)
 end)
 

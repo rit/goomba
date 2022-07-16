@@ -3,3 +3,9 @@
 -- -2?
 --
 -- 4 + 2 * (21 - 24)
+--
+--
+------------------------------------
+-- busted tagging
+-- busted -t docus
+-- it("run #focus", function() end)

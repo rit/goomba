@@ -1,4 +1,5 @@
 local lpeg = require "lpeg"
+local pt = require "pt"
 local push = table.insert
 local pop = table.remove
 
@@ -18,8 +19,36 @@ local function node(nbr)
   return { tag = "numeral", val = tonumber(nbr) }
 end
 
+local supportedOps = {
+  ["+"] = "add",
+  ["-"] = "sub",
+}
+local function nodeBinop(op)
+  return {
+    tag = "binop",
+    val = supportedOps[op]
+  }
+end
 
-local g = space * numeral / node
+local function parse_nodes(nodes)
+  idx = 1
+  local node = nodes[idx]
+  local tree = node
+  for i=2, #nodes, 2 do
+    newtree = nodes[i]
+    left = tree
+    right = nodes[i+1]
+    newtree["left"] = left
+    newtree["right"] = right
+    tree = newtree
+  end
+  return tree
+end
+
+
+local opA = lpeg.C(lpeg.S("+-")) * space
+local n = numeral / node 
+local g = space * lpeg.Ct(n * ((opA / nodeBinop) * n)^0) / parse_nodes
 
 
 -- Generate the AST
