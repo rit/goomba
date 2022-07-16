@@ -9,8 +9,9 @@ end
  
 
 local space = lpeg.S(" \n\t")^0
-local numeral = space * lpeg.R("09")^1 * space
-local hexnum = space * lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex
+local decimal = lpeg.R("09")^1 * space
+local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex
+local numeral = hexnum + decimal
 
 
 local function node(nbr)
@@ -18,7 +19,7 @@ local function node(nbr)
 end
 
 
-local g = space * (hexnum + numeral) / node
+local g = space * numeral / node
 
 
 -- Generate the AST
