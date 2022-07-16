@@ -95,8 +95,16 @@ local function run(code, stack)
       local left = pop(stack)
       local right = pop(stack)
       push(stack, left - right)
+    elseif op == "mul" then
+      local left = pop(stack)
+      local right = pop(stack)
+      push(stack, left * right)
+    elseif op == "div" then
+      local left = pop(stack)
+      local right = pop(stack)
+      push(stack, left / right)
     else
-      error("Opcode not supported")
+      error(string.format("Opcode `%s` not supported", op))
     end
     pc = pc + 1
   end
