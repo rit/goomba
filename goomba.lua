@@ -4,7 +4,7 @@ local push = table.insert
 local pop = table.remove
 
 
-local function hex(nbr)
+local function hex2dec(nbr)
   return tonumber(nbr, 16)
 end
  
@@ -39,11 +39,10 @@ end
 
 local space = lpeg.S(" \n\t")^0
 local decimal = lpeg.R("09")^1 * space
-local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex
-local numeral = hexnum + decimal
+local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2dec
+local numeral = (hexnum + decimal) / node
 local opA = lpeg.C(lpeg.S("+-")) * space
-local n = numeral / node 
-local g = space * lpeg.Ct(n * ((opA / nodeBinop) * n)^0) / foldBin
+local g = space * lpeg.Ct(numeral * ((opA / nodeBinop) * numeral)^0) / foldBin
 
 
 -- Generate the AST
