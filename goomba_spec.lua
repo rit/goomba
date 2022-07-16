@@ -98,6 +98,18 @@ describe("generating code", function()
     local actual = goomba.compile(ast)
     assert.are.same({"push", 1, "push", 2, "sub"}, actual)
   end)
+
+  it("generates opcodes for multiplication #focus", function()
+    local ast = goomba.parse("2 * 4")
+    local code = goomba.compile(ast)
+    assert.are.same({"push", 2, "push", 4, "mul"}, code)
+  end)
+
+  it("generates opcodes for division #focus", function()
+    local ast = goomba.parse("4 / 2")
+    local code = goomba.compile(ast)
+    assert.are.same({"push", 4, "push", 2, "div"}, code)
+  end)
 end)
 
 
