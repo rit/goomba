@@ -47,7 +47,7 @@ describe("generating AST", function()
 end)
 
 
-describe("generating code #focus", function()
+describe("generating code", function()
   it("generates push instruction for numeral", function()
     local ast = { tag = "numeral", val = 8 }
     local actual = goomba.compile(ast)
@@ -64,10 +64,16 @@ describe("generating code #focus", function()
 end)
 
 
-describe("run", function()
+describe("run #focus", function()
   it("evalulate the stack", function()
     local code = {"push", 8}
     local stack = goomba.run(code, {})
     assert.are.same({8}, stack)
+  end)
+
+  it("adds", function()
+    local code = {"push", 1, "push", 2, "add"}
+    local stack = goomba.run(code, {})
+    assert.are.same({3}, stack)
   end)
 end)

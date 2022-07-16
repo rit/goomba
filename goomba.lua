@@ -83,6 +83,10 @@ local function run(code, stack)
     if op == "push" then
       pc = pc + 1
       push(stack, code[pc])
+    elseif op == "add" then
+      local left = pop(stack)
+      local right = pop(stack)
+      push(stack, left + right)
     else
       error("Opcode not supported")
     end
