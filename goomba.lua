@@ -53,6 +53,7 @@ end
 
 -- Generate the opcodes (instruction sets)
 -- Return a list i.e., { "push", 34 }
+-- code is a FIFO list
 local function code_expr(state, node)
   local code = state.code
   if node.tag == "numeral" then
@@ -74,6 +75,7 @@ local function compile(ast)
   return state.code
 end
 
+-- stack is a LIFO
 local function run(code, stack)
   local pc = 1
   while pc <= #code do
