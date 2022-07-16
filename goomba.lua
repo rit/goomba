@@ -87,6 +87,10 @@ local function run(code, stack)
       local left = pop(stack)
       local right = pop(stack)
       push(stack, left + right)
+    elseif op == "sub" then
+      local left = pop(stack)
+      local right = pop(stack)
+      push(stack, left - right)
     else
       error("Opcode not supported")
     end
