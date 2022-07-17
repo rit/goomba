@@ -7,7 +7,6 @@ local pop = table.remove
 local function hex2dec(nbr)
   return tonumber(nbr, 16)
 end
- 
 
 local function node(nbr)
   return { tag = "numeral", val = tonumber(nbr) }
@@ -29,9 +28,9 @@ end
 local function foldBin(nodes)
   local tree = nodes[1]
   for i=2, #nodes, 2 do
-    newtree = nodes[i]
-    left = tree
-    right = nodes[i+1]
+    local newtree = nodes[i]
+    local left = tree
+    local right = nodes[i+1]
     newtree["left"] = left
     newtree["right"] = right
     tree = newtree
