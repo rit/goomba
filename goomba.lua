@@ -8,7 +8,7 @@ local function hex2dec(nbr)
   return tonumber(nbr, 16)
 end
 
-local function node(nbr)
+local function nodeNumeral(nbr)
   return { tag = "numeral", val = tonumber(nbr) }
 end
 
@@ -41,7 +41,7 @@ end
 local space = lpeg.S(" \n\t")^0
 local decimal = lpeg.R("09")^1 * space
 local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2dec
-local numeral = (hexnum + decimal) / node
+local numeral = (hexnum + decimal) / nodeNumeral
 local opA = lpeg.C(lpeg.S("+-")) * space / nodeBinop
 local opM = lpeg.C(lpeg.S("*/")) * space / nodeBinop
 local term = lpeg.Ct(numeral * (opM * numeral)^0) / foldBin
