@@ -43,10 +43,10 @@ local space = lpeg.S(" \n\t")^0
 local decimal = lpeg.R("09")^1 * space
 local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2dec
 local numeral = (hexnum + decimal) / node
-local opA = lpeg.C(lpeg.S("+-")) * space
-local opM = lpeg.C(lpeg.S("*/")) * space
-local term = lpeg.Ct(numeral * ((opM / nodeBinop) * numeral)^0) / foldBin
-local g = space * lpeg.Ct(term * ((opA / nodeBinop) * term)^0) / foldBin
+local opA = lpeg.C(lpeg.S("+-")) * space / nodeBinop
+local opM = lpeg.C(lpeg.S("*/")) * space / nodeBinop
+local term = lpeg.Ct(numeral * (opM * numeral)^0) / foldBin
+local g = space * lpeg.Ct(term * (opA * term)^0) / foldBin
 
 
 -- Generate the AST
