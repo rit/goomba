@@ -1,7 +1,14 @@
 local lpeg = require "lpeg"
-local pt = require "pt"
+-- local pt = require "pt"
 local push = table.insert
 local pop = table.remove
+
+-- opcodes
+local PUSH = "push"
+local ADD = "add"
+local SUB = "sub"
+local MUL = "mul"
+local DIV = "div"
 
 
 local function hex2dec(nbr)
@@ -13,10 +20,10 @@ local function nodeNumeral(nbr)
 end
 
 local supportedOps = {
-  ["+"] = "add",
-  ["-"] = "sub",
-  ["*"] = "mul",
-  ["/"] = "div",
+  ["+"] = ADD,
+  ["-"] = SUB,
+  ["*"] = MUL,
+  ["/"] = DIV,
 }
 local function nodeBinop(op)
   return {
@@ -60,7 +67,7 @@ end
 local function code_expr(state, node)
   local code = state.code
   if node.tag == "numeral" then
-    push(code, "push")
+    push(code, PUSH)
     push(code, node.val)
   elseif node.tag == "binop" then
     code_expr(state, node.left)
@@ -83,7 +90,7 @@ local function run(code, stack)
   local pc = 1
   while pc <= #code do
     local op = code[pc]
-    if op == "push" then
+    if op == PUSH then
       pc = pc + 1
       push(stack, code[pc])
     elseif op == "add" then
