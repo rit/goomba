@@ -58,7 +58,7 @@ describe("generating AST", function()
     assert.are.same(expected, actual)
   end)
 
-  it("can parse multiplication #focus", function()
+  it("can parse multiplication", function()
     local ast = goomba.parse("1 * 2")
     local expected = {
       tag = "binop",
@@ -70,7 +70,7 @@ describe("generating AST", function()
     assert.are.same(expected, ast)
   end)
 
-  it("can parse multiplication #focus", function()
+  it("can parse multiplication", function()
     local ast = goomba.parse("4 / 2")
     local expected = {
       tag = "binop",
@@ -99,13 +99,13 @@ describe("generating code", function()
     assert.are.same({"push", 1, "push", 2, "sub"}, actual)
   end)
 
-  it("generates opcodes for multiplication #focus", function()
+  it("generates opcodes for multiplication", function()
     local ast = goomba.parse("2 * 4")
     local code = goomba.compile(ast)
     assert.are.same({"push", 2, "push", 4, "mul"}, code)
   end)
 
-  it("generates opcodes for division #focus", function()
+  it("generates opcodes for division", function()
     local ast = goomba.parse("4 / 2")
     local code = goomba.compile(ast)
     assert.are.same({"push", 4, "push", 2, "div"}, code)
@@ -140,7 +140,7 @@ describe("run", function()
     assert.are.same({4}, stack)
   end)
 
-  it("can do multiplication #focus", function()
+  it("can do multiplication", function()
     local ast = goomba.parse("2 * 4")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
@@ -154,7 +154,7 @@ describe("run", function()
     assert.are.same({2}, stack)
   end)
 
-  it("supports priority #focus", function()
+  it("supports priority", function()
     local ast = goomba.parse("6 - 8/4")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
