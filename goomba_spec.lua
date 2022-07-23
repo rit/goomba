@@ -9,6 +9,10 @@ describe("generating AST", function()
         tag = "numeral",
         val = 2,
   }
+  local node_3 = {
+        tag = "numeral",
+        val = 3,
+  }
   local node_4 = {
         tag = "numeral",
         val = 4,
@@ -81,6 +85,23 @@ describe("generating AST", function()
     }
     assert.are.same(expected, ast)
   end)
+
+  it("parses parenthesized expression #focus", function()
+    local ast = goomba.parse("(2 + 4) / 3")
+    local expected = {}
+    assert.are.same("binop", ast.tag)
+    assert.are.same("div", ast.val)
+    assert.are.same(node_3, ast.right)
+    assert.are.same(
+      {
+        tag = "binop",
+        val = "add",
+        left = node_2,
+        right = node_4,
+      },
+      ast.left
+    )
+  end)
 end)
 
 
@@ -147,7 +168,7 @@ describe("run", function()
     assert.are.same({8}, stack)
   end)
 
-  it("can do division #focus", function()
+  it("can do division", function()
     local ast = goomba.parse("8 / 4")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
@@ -159,5 +180,12 @@ describe("run", function()
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
     assert.are.same({4}, stack)
+  end)
+
+  it("supports parenthesized expression #focus", function()
+    local ast = goomba.parse("(2 + 4) / 3")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({2}, stack)
   end)
 end)

@@ -1,5 +1,5 @@
 local lpeg = require "lpeg"
--- local pt = require "pt"
+local pt = require "pt"
 local push = table.insert
 local pop = table.remove
 
@@ -46,13 +46,24 @@ local function foldBin(nodes)
 end
 
 local space = lpeg.S(" \n\t")^0
+local ORB = "(" * space -- open round bracket
+local CRB = ")" * space -- closing round bracket
+
 local decimal = lpeg.R("09")^1 * space
 local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2dec
 local numeral = (hexnum + decimal) / nodeNumeral
 local opA = lpeg.C(lpeg.S("+-")) * space / nodeBinop
 local opM = lpeg.C(lpeg.S("*/")) * space / nodeBinop
-local term = lpeg.Ct(numeral * (opM * numeral)^0) / foldBin
-local g = space * lpeg.Ct(term * (opA * term)^0) / foldBin
+
+local term = lpeg.V"term"
+local expr = lpeg.V"expr"
+local factor = lpeg.V"factor"
+local g = lpeg.P {"expr",
+  factor = numeral + ORB * expr * CRB,
+  term = lpeg.Ct(factor * (opM * factor)^0) / foldBin,
+  expr = space * lpeg.Ct(term * (opA * term)^0) / foldBin,
+}
+
 
 
 -- Generate the AST
@@ -65,6 +76,7 @@ end
 -- Return a list i.e., { "push", 34 }
 -- code is a FIFO list
 local function code_expr(state, node)
+  pt.pt(print(state))
   local code = state.code
   if node.tag == "numeral" then
     push(code, PUSH)
