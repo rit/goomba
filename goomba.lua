@@ -1,5 +1,4 @@
 local lpeg = require "lpeg"
-local pt = require "pt"
 local push = table.insert
 local pop = table.remove
 
@@ -76,7 +75,10 @@ end
 -- Return a list i.e., { "push", 34 }
 -- code is a FIFO list
 local function code_expr(state, node)
-  pt.pt(print(state))
+  --[[
+  local pt = require "pt"
+  print(pt.pt(state))
+  --]]
   local code = state.code
   if node.tag == "numeral" then
     push(code, PUSH)
