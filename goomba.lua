@@ -1,5 +1,4 @@
 local lpeg = require "lpeg"
-local pt = require "pt"
 local push = table.insert
 local pop = table.remove
 
@@ -65,14 +64,14 @@ end
 
 
 local function foldNegation(unaryOp)
-  print("dragon: match negation:", pt.pt(unaryOp))
   if unaryOp == "-" then
     return {
       tag = "unary",
       val = NEGATION
     }
   else
-    return nil 
+    -- TODO What does nil mean here?
+    return nil
   end
 end
 
@@ -116,7 +115,7 @@ end
 -- Return a list i.e., { "push", 34 }
 -- code is a FIFO list
 local function code_expr(state, node)
-  --x[[
+  --[[
   local pt = require "pt"
   print(pt.pt(state))
   --]]
