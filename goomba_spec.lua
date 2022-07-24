@@ -86,7 +86,7 @@ describe("generating AST", function()
     assert.are.same(expected, ast)
   end)
 
-  it("parses parenthesized expression #focus", function()
+  it("parses parenthesized expression", function()
     local ast = goomba.parse("(2 + 4) / 3")
     local expected = {}
     assert.are.same("binop", ast.tag)
@@ -101,6 +101,17 @@ describe("generating AST", function()
       },
       ast.left
     )
+  end)
+
+  it("matches remander operator #focus", function()
+    local ast = goomba.parse("3 % 2")
+    local expected = {
+      tag = "binop",
+      val = "mod",
+      left = node_3,
+      right = node_2
+    }
+    assert.are.same(expected, ast)
   end)
 end)
 
@@ -130,6 +141,12 @@ describe("generating code", function()
     local ast = goomba.parse("4 / 2")
     local code = goomba.compile(ast)
     assert.are.same({"push", 4, "push", 2, "div"}, code)
+  end)
+
+  it("generates opcodes for modulo #focus", function()
+    local ast = goomba.parse("3 % 2")
+    local code = goomba.compile(ast)
+    assert.are.same({"push", 3, "push", 2, "mod"}, code)
   end)
 end)
 
@@ -182,10 +199,17 @@ describe("run", function()
     assert.are.same({4}, stack)
   end)
 
-  it("supports parenthesized expression #focus", function()
+  it("supports parenthesized expression", function()
     local ast = goomba.parse("(2 + 4) / 3")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
     assert.are.same({2}, stack)
+  end)
+
+  it("supports modulo opcode #focus", function()
+    local ast = goomba.parse("3 % 2")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({1}, stack)
   end)
 end)

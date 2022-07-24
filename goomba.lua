@@ -8,6 +8,7 @@ local ADD = "add"
 local SUB = "sub"
 local MUL = "mul"
 local DIV = "div"
+local MOD = "mod"
 
 
 local function hex2dec(nbr)
@@ -23,6 +24,7 @@ local supportedOps = {
   ["-"] = SUB,
   ["*"] = MUL,
   ["/"] = DIV,
+  ["%"] = MOD,
 }
 local function nodeBinop(op)
   return {
@@ -52,7 +54,7 @@ local decimal = lpeg.R("09")^1 * space
 local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2dec
 local numeral = (hexnum + decimal) / nodeNumeral
 local opA = lpeg.C(lpeg.S("+-")) * space / nodeBinop
-local opM = lpeg.C(lpeg.S("*/")) * space / nodeBinop
+local opM = lpeg.C(lpeg.S("*/%")) * space / nodeBinop
 
 local term = lpeg.V"term"
 local expr = lpeg.V"expr"
@@ -123,6 +125,10 @@ local function run(code, stack)
       local right = pop(stack)
       local left = pop(stack)
       push(stack, left / right)
+    elseif op == MOD then
+      local right = pop(stack)
+      local left = pop(stack)
+      push(stack, left % right)
     else
       error(string.format("Opcode `%s` not supported", op))
     end
