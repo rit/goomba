@@ -195,6 +195,12 @@ describe("generating code", function()
     local code = goomba.compile(ast)
     assert.are.same({"push", 3, "push", 2, "pow"}, code)
   end)
+
+  it("generates opcodes for negation", function()
+    local ast = goomba.parse("-2")
+    local code = goomba.compile(ast)
+    assert.are.same({"push", 2, "negation"}, code)
+  end)
 end)
 
 
@@ -267,7 +273,7 @@ describe("run", function()
     assert.are.same({9}, stack)
   end)
 
-  it("supports unary minus", function()
+  it("supports unary minus #focus", function()
     local ast = goomba.parse("-2")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})

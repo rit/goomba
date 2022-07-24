@@ -11,6 +11,7 @@ local MUL = "mul"
 local DIV = "div"
 local MOD = "mod"
 local POW = "pow"
+local NEGATION = "negation"
 
 
 local function hex2dec(nbr)
@@ -68,7 +69,7 @@ local function foldNegation(unaryOp)
   if unaryOp == "-" then
     return {
       tag = "unary",
-      val = "negation"
+      val = NEGATION
     }
   else
     return nil 
@@ -127,6 +128,9 @@ local function code_expr(state, node)
     code_expr(state, node.left)
     code_expr(state, node.right)
     push(code, node.val) -- should this be pushed first?
+  elseif node.tag == "unary" then
+    code_expr(state, node.target)
+    push(code, node.val)
   end
 end
 
@@ -171,6 +175,9 @@ local function run(code, stack)
       local right = pop(stack)
       local left = pop(stack)
       push(stack, left ^ right)
+    elseif op == NEGATION then
+      local target = pop(stack)
+      push(stack, -target)
     else
       error(string.format("Opcode `%s` not supported", op))
     end
