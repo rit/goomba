@@ -9,6 +9,7 @@ local SUB = "sub"
 local MUL = "mul"
 local DIV = "div"
 local MOD = "mod"
+local POW = "pow"
 
 
 local function hex2dec(nbr)
@@ -25,6 +26,7 @@ local supportedOps = {
   ["*"] = MUL,
   ["/"] = DIV,
   ["%"] = MOD,
+  ["^"] = POW,
 }
 local function nodeBinop(op)
   return {
@@ -55,13 +57,16 @@ local hexnum = lpeg.P("0x") * lpeg.C(lpeg.R("09", "af", "AF")^1) * space / hex2d
 local numeral = (hexnum + decimal) / nodeNumeral
 local opA = lpeg.C(lpeg.S("+-")) * space / nodeBinop
 local opM = lpeg.C(lpeg.S("*/%")) * space / nodeBinop
+local opPower = lpeg.C("^") * space / nodeBinop
 
 local term = lpeg.V"term"
-local expr = lpeg.V"expr"
 local factor = lpeg.V"factor"
+local power = lpeg.V"power"
+local expr = lpeg.V"expr"
 local g = lpeg.P {"expr",
   factor = numeral + ORB * expr * CRB,
-  term = lpeg.Ct(factor * (opM * factor)^0) / foldBin,
+  power = lpeg.Ct(factor * (opPower * factor)^0) / foldBin,
+  term = lpeg.Ct(power * (opM * power)^0) / foldBin,
   expr = space * lpeg.Ct(term * (opA * term)^0) / foldBin,
 }
 
@@ -129,6 +134,10 @@ local function run(code, stack)
       local right = pop(stack)
       local left = pop(stack)
       push(stack, left % right)
+    elseif op == POW then
+      local right = pop(stack)
+      local left = pop(stack)
+      push(stack, left ^ right)
     else
       error(string.format("Opcode `%s` not supported", op))
     end

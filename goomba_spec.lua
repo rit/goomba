@@ -103,13 +103,40 @@ describe("generating AST", function()
     )
   end)
 
-  it("matches remander operator #focus", function()
+  it("matches remander operator", function()
     local ast = goomba.parse("3 % 2")
     local expected = {
       tag = "binop",
       val = "mod",
       left = node_3,
       right = node_2
+    }
+    assert.are.same(expected, ast)
+  end)
+
+  it("matches power operater", function()
+    local ast = goomba.parse("3 ^ 2")
+    local expected = {
+      tag = "binop",
+      val = "pow",
+      left = node_3,
+      right = node_2
+    }
+    assert.are.same(expected, ast)
+  end)
+
+  it("matches power operater precedence", function()
+    local ast = goomba.parse("3 ^ 2 * 1")
+    local expected = {
+      tag = "binop",
+      val = "mul",
+      left = {
+        tag = "binop",
+        val = "pow",
+        left = node_3,
+        right = node_2
+      },
+      right = node_1
     }
     assert.are.same(expected, ast)
   end)
@@ -143,10 +170,16 @@ describe("generating code", function()
     assert.are.same({"push", 4, "push", 2, "div"}, code)
   end)
 
-  it("generates opcodes for modulo #focus", function()
+  it("generates opcodes for modulo", function()
     local ast = goomba.parse("3 % 2")
     local code = goomba.compile(ast)
     assert.are.same({"push", 3, "push", 2, "mod"}, code)
+  end)
+
+  it("generates opcodes for power", function()
+    local ast = goomba.parse("3 ^ 2")
+    local code = goomba.compile(ast)
+    assert.are.same({"push", 3, "push", 2, "pow"}, code)
   end)
 end)
 
@@ -206,10 +239,17 @@ describe("run", function()
     assert.are.same({2}, stack)
   end)
 
-  it("supports modulo opcode #focus", function()
+  it("supports modulo opcode", function()
     local ast = goomba.parse("3 % 2")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
     assert.are.same({1}, stack)
+  end)
+
+  it("supports power opcode", function()
+    local ast = goomba.parse("3 ^ 2")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({9}, stack)
   end)
 end)
