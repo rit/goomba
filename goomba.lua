@@ -1,4 +1,5 @@
 local lpeg = require "lpeg"
+local pt = require "pt"
 local push = table.insert
 local pop = table.remove
 
@@ -35,6 +36,7 @@ local function nodeBinop(op)
   }
 end
 
+
 local function foldBin(nodes)
   local tree = nodes[1]
   for i=2, #nodes, 2 do
@@ -47,6 +49,32 @@ local function foldBin(nodes)
   end
   return tree
 end
+
+
+local function foldExpr(nodes)
+  local root = nodes[1]
+  local target = nodes[2]
+  if root ~= nil then
+    root.target = target
+    return root
+  else
+    return target
+  end
+end
+
+
+local function foldNegation(unaryOp)
+  print("dragon: match negation:", pt.pt(unaryOp))
+  if unaryOp == "-" then
+    return {
+      tag = "unary",
+      val = "negation"
+    }
+  else
+    return nil 
+  end
+end
+
 
 local space = lpeg.S(" \n\t")^0
 local ORB = "(" * space -- open round bracket
@@ -62,13 +90,18 @@ local opPower = lpeg.C("^") * space / nodeBinop
 local term = lpeg.V"term"
 local factor = lpeg.V"factor"
 local power = lpeg.V"power"
+local negation = lpeg.V"negation"
 local expr = lpeg.V"expr"
+local binexpr = lpeg.V"binexpr"
 local g = lpeg.P {"expr",
   factor = numeral + ORB * expr * CRB,
   power = lpeg.Ct(factor * (opPower * factor)^0) / foldBin,
   term = lpeg.Ct(power * (opM * power)^0) / foldBin,
-  expr = space * lpeg.Ct(term * (opA * term)^0) / foldBin,
+  negation = lpeg.C("-")^0 * space / foldNegation,
+  binexpr = space * lpeg.Ct(term * (opA * term)^0) / foldBin,
+  expr = space * lpeg.Ct(negation * binexpr) / foldExpr,
 }
+g = space * g * -1
 
 
 
@@ -82,7 +115,7 @@ end
 -- Return a list i.e., { "push", 34 }
 -- code is a FIFO list
 local function code_expr(state, node)
-  --[[
+  --x[[
   local pt = require "pt"
   print(pt.pt(state))
   --]]

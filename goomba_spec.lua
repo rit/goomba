@@ -1,4 +1,5 @@
 local goomba = require "goomba"
+local pt = require "pt"
 
 describe("generating AST", function()
   local node_1 = {
@@ -140,6 +141,19 @@ describe("generating AST", function()
     }
     assert.are.same(expected, ast)
   end)
+
+  it("parses the unary minus #focus", function()
+    local ast = goomba.parse("2")
+    assert.are.same(node_2, ast)
+
+    ast = goomba.parse("-2")
+    expected = {
+      tag = "unary",
+      val = "negation",
+      target = node_2
+    }
+    assert.are.same(expected, ast)
+  end)
 end)
 
 
@@ -251,5 +265,12 @@ describe("run", function()
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
     assert.are.same({9}, stack)
+  end)
+
+  it("supports unary minus", function()
+    local ast = goomba.parse("-2")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({-2}, stack)
   end)
 end)
