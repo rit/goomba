@@ -97,7 +97,7 @@ local g = lpeg.P {"expr",
   factor = numeral + ORB * expr * CRB,
   power = lpeg.Ct(factor * (opPower * factor)^0) / foldBin,
   term = lpeg.Ct(power * (opM * power)^0) / foldBin,
-  negation = lpeg.C("-")^0 * space / foldNegation,
+  negation = lpeg.C("-")^-1 * space / foldNegation,
   binexpr = space * lpeg.Ct(term * (opA * term)^0) / foldBin,
   expr = space * lpeg.Ct(negation * binexpr) / foldExpr,
 }

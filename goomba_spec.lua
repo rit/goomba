@@ -204,6 +204,13 @@ describe("generating code", function()
 end)
 
 
+local function exec(expr)
+  local ast = goomba.parse(expr)
+  local code = goomba.compile(ast)
+  return goomba.run(code, {})
+end
+
+
 describe("run", function()
   it("evalulate the stack", function()
     local code = {"push", 8}
@@ -217,17 +224,13 @@ describe("run", function()
     assert.are.same({3}, stack)
   end)
 
-  it("adds multiple operations", function()
-    local ast = goomba.parse("1 + 2 + 3 + 4 + 5")
-    local code = goomba.compile(ast)
-    local stack = goomba.run(code, {})
+  it("adds multiple operations #focus", function()
+    local stack = exec("1 + 2 + 3 + 4 + 5")
     assert.are.same({15}, stack)
   end)
 
   it("can do substraction", function()
-    local ast = goomba.parse("1 + 2 - 3 + 4")
-    local code = goomba.compile(ast)
-    local stack = goomba.run(code, {})
+    local stack = exec("1 + 2 - 3 + 4")
     assert.are.same({4}, stack)
   end)
 
@@ -273,10 +276,29 @@ describe("run", function()
     assert.are.same({9}, stack)
   end)
 
-  it("supports unary minus #focus", function()
-    local ast = goomba.parse("-2")
+  it("supports negation #focus", function()
+    local ast = goomba.parse("(-2) + 3 + (-4)")
     local code = goomba.compile(ast)
     local stack = goomba.run(code, {})
-    assert.are.same({-2}, stack)
+    assert.are.same({-3}, stack)
+  end)
+
+  it("supports negation #focus", function()
+    local ast = goomba.parse("1 + 2 - 3")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({0}, stack)
+  end)
+
+  it("supports consecutive negation #focus", function()
+    local ast = goomba.parse("-(-4)")
+    local code = goomba.compile(ast)
+    local stack = goomba.run(code, {})
+    assert.are.same({4}, stack)
+  end)
+
+  it("consecutive negation needs to be wrapped in round brackets #focus", function()
+    local ast = goomba.parse("--4)")
+    assert.is_nil(ast)
   end)
 end)
